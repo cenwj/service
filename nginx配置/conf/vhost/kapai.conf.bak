@@ -1,0 +1,49 @@
+server {
+        listen  80;
+        server_name  www.kapai.com kapai.com 60.191.205.50;
+
+        access_log  /pk_data/webservice_log/kp_access.log;
+        error_log /pk_data/webservice_log/kp_error.log;
+
+        location / {
+            root   /home/www/app;
+            index  index.php index.html index.htm;
+            if (!-e $request_filename){
+                  rewrite ^/(.*) /index.php last;
+                                  }
+        }
+      location ~ .*\.(gif|jpg|jpeg|png|bmp|swf)$  
+      {  
+        expires      30d;  
+      }  
+  
+     location ~ .*\.(js|css)?$  
+     {  
+       expires      1h;  
+     }  
+       #location / {
+       # if (!-e $request_filename){
+       #           rewrite ^/(.*) /index.php last;
+       #                           }
+       #}
+       #autoindex on;
+       # error_page   500 502 503 504  /50x.html;
+       # location = /50x.html {
+       #     root   /usr/share/nginx/html;
+       # }
+
+       # pass the PHP scripts to FastCGI server listening on 127.0.0.1:9000
+        location ~ \.php$ {
+            root           /home/www/app;
+            fastcgi_pass  127.0.0.1:9000;
+            fastcgi_index  index.php;
+            fastcgi_param  SCRIPT_FILENAME  /home/www/app/$fastcgi_script_name;
+            #fastcgi_param SCRIPT_FILENAME $request_filename;
+            fastcgi_param PATH_INFO $fastcgi_script_name;
+            include        fastcgi_params;
+        }
+
+        location ~ /.ht {
+            deny  all;
+        }
+}
